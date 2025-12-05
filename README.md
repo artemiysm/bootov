@@ -1,11 +1,37 @@
-# 🧪 Отчёт: Интеграция React Query в React-приложение
+#  HTTP Methods & React Query Integration Lab
+
+> Учебный проект: работа с HTTP-методами (GET/POST/PUT/DELETE) и интеграция React Query в React-приложение  
+> Данные: [JSONPlaceholder](https://jsonplaceholder.typicode.com) (публичный fake REST API)
+
+---
+
+##  Цели
+
+1. **Задание 1**: Реализовать CRUD через `useEffect` + `axios`  
+2. **Задание 2**: Заменить ручное управление состоянием на `@tanstack/react-query`  
+   - Кэширование, оптимистичные обновления, зависимые запросы, кастомные хуки
+
+---
+
+##  Технологии
+
+| Стек | Версия |
+|------|--------|
+| React | `18.x` |
+| React Router | `6.x` |
+| Axios | `1.x` |
+| React Query | `@tanstack/react-query@5.x` |
+| DevTools | `@tanstack/react-query-devtools` |
+
+---
+#  Отчёт: Интеграция React Query в React-приложение
 
 > Реализовано на базе [JSONPlaceholder](https://jsonplaceholder.typicode.com) — бесплатного fake REST API для тестирования.  
 > **Цель**: заменить ручное управление состоянием (`useEffect` + `useState`) на современный data-fetching через `@tanstack/react-query`.
 
 ---
 
-## 🔁 Сравнение: «До» и «После»
+##  Сравнение: «До» и «После»
 
 ### 1. Управление состоянием данных
 
@@ -25,14 +51,21 @@
 | **Time to Interactive (TTI)** | +150–300 мс на каждый запрос (рендер после загрузки) | -50–100 мс (данные уже в кэше при навигации) |
 | **Bundle Size** | — | +~12 KB (gzip) — окупается за счёт уменьшения boilerplate-кода |
 
-> 💡 **Вывод**: React Query снижает сложность, уменьшает количество сетевых запросов, ускоряет навигацию и делает UX плавнее.
+>  **Вывод**: React Query снижает сложность, уменьшает количество сетевых запросов, ускоряет навигацию и делает UX плавнее.
 
 ---
+## Установка и запуск
 
+```bash
+git clone <this-repo>
+cd <project>
+npm install
+npm start
 
 ##  Скриншоты React Query DevTools
 ### 1. Мутации в реальном времени
 ![DevTools: Mutations](./public/docs/image.png)  
+
 
 
 
