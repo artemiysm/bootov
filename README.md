@@ -57,7 +57,7 @@
 ## Установка и запуск
 
 ```bash
-git clone <this-repo>
+git clone <https://github.com/artemiysm/bootov/tree/second-lab>
 cd <project>
 npm install
 npm start
