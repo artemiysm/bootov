@@ -23,11 +23,6 @@
 | React Query | `@tanstack/react-query@5.x` |
 | DevTools | `@tanstack/react-query-devtools` |
 
----
-#  Отчёт: Интеграция React Query в React-приложение
-
-> Реализовано на базе [JSONPlaceholder](https://jsonplaceholder.typicode.com) — бесплатного fake REST API для тестирования.  
-> **Цель**: заменить ручное управление состоянием (`useEffect` + `useState`) на современный data-fetching через `@tanstack/react-query`.
 
 ---
 
