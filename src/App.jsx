@@ -1,14 +1,24 @@
+// src/App.js
 import React from 'react';
-import './App.css';
-import { PostList } from './components/PostList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PostList from './components/PostList';
+import PostDetail from './components/PostDetail';
 
 function App() {
   return (
-    <div className="App">
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '16px' }}>
-        <PostList />
-      </main>
-    </div>
+    <Router>
+      <div className="App">
+        <header style={{ textAlign: 'center', padding: '20px', backgroundColor: '#282c34', color: 'white' }}>
+          <h1>Posts Manager</h1>
+        </header>
+        <main>
+          <Routes>
+            <Route path="/" element={<PostList />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
