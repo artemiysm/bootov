@@ -54,6 +54,11 @@
 >  **Вывод**: React Query снижает сложность, уменьшает количество сетевых запросов, ускоряет навигацию и делает UX плавнее.
 
 ---
+
+##  Скриншоты React Query DevTools
+### 1. Мутации в реальном времени
+---
+![DevTools: Mutations](./public/docs/image.png)  
 ## Установка и запуск
 
 ```bash
@@ -62,9 +67,6 @@ cd <project>
 npm install
 npm start
 
-##  Скриншоты React Query DevTools
-### 1. Мутации в реальном времени
-![DevTools: Mutations](./public/docs/image.png)  
 
 
 
