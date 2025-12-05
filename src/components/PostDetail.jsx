@@ -108,7 +108,7 @@ export const PostDetail = () => {
   if (postError) {
     return (
       <div style={{ padding: '20px', color: 'red', textAlign: 'center' }}>
-        <h2>⚠️ Failed to load post</h2>
+        <h2> Failed to load post</h2>
         <p>{postErr.message}</p>
         <Link to="/" style={{ color: '#007bff', textDecoration: 'underline' }}>
           ← Back to list
@@ -140,7 +140,7 @@ export const PostDetail = () => {
       )}
 
       <section>
-        <h3>💬 Comments ({comments.length})</h3>
+        <h3> Comments ({comments.length})</h3>
 
     {commentsError && (
     <div style={{ color: 'red', marginBottom: '16px' }}>
@@ -149,7 +149,7 @@ export const PostDetail = () => {
         onClick={() => queryClient.invalidateQueries({ queryKey: ['comments', postId] })}
         style={{ marginLeft: '8px', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}
         >
-        ↻ Retry
+        Retry
         </button>
     </div>
     )}
