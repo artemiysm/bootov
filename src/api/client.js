@@ -1,0 +1,18 @@
+// src/api/client.js
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'https://jsonplaceholder.typicode.com',
+  timeout: 10000,
+});
+
+// Глобальный обработчик ошибок (можно расширить)
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
+
+export default api;
