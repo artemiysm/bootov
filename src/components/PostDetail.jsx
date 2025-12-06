@@ -1,4 +1,3 @@
-// src/components/PostDetail.js
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
@@ -14,7 +13,7 @@ export const PostDetail = () => {
     body: '',
   });
 
-  // ✅ Запрос поста
+  //  Запрос поста
   const {
     data: post,
     isLoading: postLoading,
@@ -27,7 +26,7 @@ export const PostDetail = () => {
     staleTime: 1000 * 60 * 2, // 2 минуты
   });
 
-  // ✅ Зависимый запрос: комментарии (запускается ТОЛЬКО после загрузки поста)
+  //  Зависимый запрос: комментарии (запускается ТОЛЬКО после загрузки поста)
   const {
     data: comments = [],
     isLoading: commentsLoading,
@@ -41,7 +40,7 @@ export const PostDetail = () => {
 
   const queryClient = useQueryClient();
 
-  // ✅ Мутация: добавить комментарий (оптимистичная)
+  //  Мутация: добавить комментарий (оптимистичная)
   const addCommentMutation = useMutation({
     mutationFn: (comment) => createComment(comment),
     onMutate: async (newComment) => {
@@ -69,10 +68,6 @@ export const PostDetail = () => {
       queryClient.setQueryData(['comments', postId], (old) =>
         old.map(c => c.id === context.tempId ? realComment : c)
       );
-    },
-    onSettled: () => {
-      // Опционально: инвалидируем, если нужно (но setQueryData уже обновил)
-      // queryClient.invalidateQueries({ queryKey: ['comments', postId] });
     },
   });
 
@@ -111,7 +106,7 @@ export const PostDetail = () => {
         <h2> Failed to load post</h2>
         <p>{postErr.message}</p>
         <Link to="/" style={{ color: '#007bff', textDecoration: 'underline' }}>
-          ← Back to list
+           Back to list
         </Link>
       </div>
     );
@@ -128,7 +123,7 @@ export const PostDetail = () => {
           textDecoration: 'none',
         }}
       >
-        ← Back to Posts
+         Back to Posts
       </Link>
 
       {post && (
@@ -227,7 +222,7 @@ export const PostDetail = () => {
               cursor: addCommentMutation.isPending ? 'not-allowed' : 'pointer',
             }}
           >
-            {addCommentMutation.isPending ? 'Sending...' : '💬 Post Comment'}
+            {addCommentMutation.isPending ? 'Sending...' : ' Post Comment'}
           </button>
         </form>
       </section>

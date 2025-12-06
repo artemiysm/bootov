@@ -1,4 +1,3 @@
-// src/components/PostList.jsx
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loading } from './Loading';
@@ -13,7 +12,7 @@ import {
 export const PostList = () => {
   const [editingPost, setEditingPost] = useState(null);
 
-  // ✅ Получаем данные через кастомный хук
+  //  Получаем данные через кастомный хук
   const {
     data: posts = [],
     isLoading,
@@ -22,7 +21,7 @@ export const PostList = () => {
     refetch,
   } = usePosts();
 
-  // ✅ Мутации через кастомные хуки
+  //  Мутации через кастомные хуки
   const createMutation = useCreatePost();
   const updateMutation = useUpdatePost();
   const deleteMutation = useDeletePost();
@@ -46,11 +45,11 @@ export const PostList = () => {
 
   return (
     <div>
-      <h2 style={{ color: '#333' }}>📝 Posts (React Query)</h2>
+      <h2 style={{ color: '#333' }}> Posts (React Query)</h2>
 
       {isError && (
         <div style={{ color: 'red', marginBottom: '16px', fontWeight: 'bold' }}>
-          ❌ Error: {error.message || 'Failed to load posts'}
+           Error: {error.message || 'Failed to load posts'}
           <button
             onClick={() => refetch()}
             style={{
@@ -63,7 +62,7 @@ export const PostList = () => {
               cursor: 'pointer',
             }}
           >
-            ↻ Retry
+             Retry
           </button>
         </div>
       )}
@@ -117,7 +116,7 @@ export const PostList = () => {
                   cursor: 'pointer',
                 }}
               >
-                ✏️ Edit
+                 Edit
               </button>
               <button
                 onClick={() => handleDeletePost(post.id)}
@@ -135,8 +134,8 @@ export const PostList = () => {
                 }}
               >
                 {deleteMutation.variables === post.id && deleteMutation.isPending
-                  ? '🗑️ Deleting...'
-                  : '🗑️ Delete'}
+                  ? ' Deleting...'
+                  : ' Delete'}
               </button>
             </div>
           </div>
