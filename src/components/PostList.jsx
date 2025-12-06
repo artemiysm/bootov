@@ -64,7 +64,7 @@ export const PostList = () => {
 
   return (
     <div>
-      <h2 style={{ color: '#333' }}>📝 Posts Manager</h2>
+      <h2 style={{ color: '#333' }}> Posts Manager</h2>
 
       {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 
@@ -85,7 +85,7 @@ export const PostList = () => {
 
       {/* Список постов */}
       {!loading && posts.length === 0 && <p>No posts yet.</p>}
-
+      {/* Удалени*/}
       <div style={{ marginTop: '20px' }}>
         {posts.map((post) => (
           <div

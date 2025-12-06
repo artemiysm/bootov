@@ -1,3 +1,4 @@
+// Простой компонент: просто текст «Loading...» по центру
 export const Loading = () => (
   <div style={{
     textAlign: 'center',

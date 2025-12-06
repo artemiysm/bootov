@@ -47,7 +47,7 @@ export const useCreatePost = () => {
       queryClient.setQueryData(['posts'], context.previousPosts);
       console.error('Ошибка создания поста:', err);
     },
-    // При успехе — инвалидируем кэш (или можно обновить напрямую)
+    // При успехе — обноволяем кэш (или можно обновить напрямую)
     onSuccess: (newPost) => {
       queryClient.setQueryData(['posts'], (old) =>
         old.map(post => post.id?.toString().startsWith('temp-') && !post.id2 ? { ...post, id: newPost.id, id2: true } : post)
