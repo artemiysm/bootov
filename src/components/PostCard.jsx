@@ -1,4 +1,3 @@
-// src/components/PostCard.jsx
 import React, { useState } from 'react';
 import { useUpdatePost, useDeletePost } from '../hooks/usePosts';
 import { useUserById } from '../hooks/useUsers';
@@ -43,7 +42,7 @@ export default function PostCard({ post }) {
           />
           <div style={styles.actions}>
             <button onClick={handleSave} disabled={isUpdating} style={styles.saveBtn}>
-              {isUpdating ? 'Сохранение...' : '✅ Сохранить'}
+              {isUpdating ? 'Сохранение...' : ' Сохранить'}
             </button>
             <button onClick={() => setIsEditing(false)} style={styles.cancelBtn}>
               Отмена
@@ -65,7 +64,7 @@ export default function PostCard({ post }) {
           </div>
           <div style={styles.actions}>
             <button onClick={() => setIsEditing(true)} style={styles.editBtn}>
-              ✏️ Редактировать
+               Редактировать
             </button>
             <button
               onClick={handleDelete}

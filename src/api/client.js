@@ -1,4 +1,3 @@
-// src/api/client.js
 import axios from 'axios';
 
 const api = axios.create({
@@ -6,7 +5,6 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Глобальный обработчик ошибок (можно расширить)
 api.interceptors.response.use(
   (res) => res,
   (error) => {

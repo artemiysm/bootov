@@ -17,7 +17,7 @@ export const PostList = () => {
         const data = await fetchPosts();
         setPosts(data);
       } catch (err) {
-        setError('⚠️ Failed to load posts.');
+        setError(' Failed to load posts.');
         console.error(err);
       } finally {
         setLoading(false);
@@ -34,7 +34,7 @@ export const PostList = () => {
       // Добавим в начало списка (ограничим 10)
       setPosts([created, ...posts.slice(0, 9)]);
     } catch (err) {
-      alert('❌ Failed to add post.');
+      alert('Failed to add post.');
     }
   };
 
@@ -45,7 +45,7 @@ export const PostList = () => {
       setPosts(posts.map(p => (p.id === updated.id ? updated : p)));
       setEditingPost(null);
     } catch (err) {
-      alert('❌ Failed to update post.');
+      alert('Failed to update post.');
     }
   };
 
@@ -58,7 +58,7 @@ export const PostList = () => {
         setPosts(posts.filter(p => p.id !== id));
       })
       .catch(() => {
-        alert('❌ Failed to delete post.');
+        alert(' Failed to delete post.');
       });
   };
 

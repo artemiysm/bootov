@@ -1,4 +1,3 @@
-// src/hooks/useUsers.js
 import { useQuery } from '@tanstack/react-query';
 import * as usersApi from '../api/users';
 

@@ -1,13 +1,11 @@
-// src/hooks/usePosts.js
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as postsApi from '../api/postsApi'; // ← точное имя файла
+import * as postsApi from '../api/postsApi';
 
 // Получение списка постов
 export const usePosts = () => {
   return useQuery({
     queryKey: ['posts'],
     queryFn: postsApi.getPosts,
-    // select: (data) => data.slice(0, 10), // можно фильтровать здесь
   });
 };
 
@@ -54,7 +52,6 @@ export const useCreatePost = () => {
       queryClient.setQueryData(['posts'], (old) =>
         old.map(post => post.id?.toString().startsWith('temp-') && !post.id2 ? { ...post, id: newPost.id, id2: true } : post)
       );
-      // Или: queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });

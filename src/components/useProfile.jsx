@@ -1,4 +1,3 @@
-// src/components/UserProfile.jsx
 import { usePostById, useUserById } from '../hooks';
 
 export default function UserProfile({ postId }) {

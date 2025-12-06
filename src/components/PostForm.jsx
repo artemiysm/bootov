@@ -41,7 +41,7 @@ export const PostForm = ({ onSubmit, initialData = null, onCancel }) => {
         backgroundColor: '#f9f9f9',
       }}
     >
-      <h3>{initialData ? '✏️ Edit Post' : '➕ Add New Post'}</h3>
+      <h3>{initialData ? ' Edit Post' : ' Add New Post'}</h3>
 
       {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
 
