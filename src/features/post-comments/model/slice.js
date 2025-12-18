@@ -1,6 +1,5 @@
+import { getCommentsByPostId, createComment } from '../../../shared/api/api';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getCommentsByPostId, createComment } from '../../api/api';
-
 const initialState = {
   byPostId: {},
   loading: 'idle',

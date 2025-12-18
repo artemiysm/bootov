@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPosts, createPost, updatePost, deletePost } from '../../api/api';
+import { getPosts, createPost, updatePost, deletePost } from '../../../shared/api/api';
 
 const initialState = {
   items: [],

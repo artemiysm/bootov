@@ -6,11 +6,11 @@ import {
   selectCommentsByPostId,
   selectCommentsLoading,
   selectCommentsError,
-} from '../store/hooks';
-import { fetchCommentsByPostId, addComment } from '../store/slices/commentsSlice';
-import { getPost } from '../api/api'; // ← будем использовать напрямую (пока не в Redux)
+} from '../../../store/hooks';
+import { fetchCommentsByPostId, addComment } from '../../../features/post-comments/model/slice';
+import { getPost } from '../../../shared/api/api'; // ← будем использовать напрямую (пока не в Redux)
 
-export const PostDetail = () => {
+export const PostDetailPage = () => {
   const { id } = useParams();
   const postId = Number(id);
   const dispatch = useAppDispatch();
@@ -229,4 +229,4 @@ export const PostDetail = () => {
   );
 };
 
-export default PostDetail;
+export default PostDetailPage;

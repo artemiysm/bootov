@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector, selectPosts, selectPostsLoading, selectPostsError } from '../store/hooks';
-import { fetchPosts, addPost, editPost, removePost } from '../store/slices/postsSlice';
+import { useAppDispatch, useAppSelector, selectPosts, selectPostsLoading, selectPostsError } from '../../../store/hooks';
+import { fetchPosts, addPost, editPost, removePost } from '../../../features/post-list/model/slice';
 import { PostForm } from './PostForm';
 
 export const PostList = () => {
