@@ -1,88 +1,70 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getPost, getCommentsByPostId, createComment } from '../api/api';
+import {
+  useAppDispatch,
+  useAppSelector,
+  selectCommentsByPostId,
+  selectCommentsLoading,
+  selectCommentsError,
+} from '../store/hooks';
+import { fetchCommentsByPostId, addComment } from '../store/slices/commentsSlice';
+import { getPost } from '../api/api'; // ← будем использовать напрямую (пока не в Redux)
 
 export const PostDetail = () => {
-  const { id } = useParams(); // получаем id из URL: /posts/1
+  const { id } = useParams();
   const postId = Number(id);
+  const dispatch = useAppDispatch();
 
+  const comments = useAppSelector(selectCommentsByPostId(postId));
+  const commentsLoading = useAppSelector(selectCommentsLoading);
+  const commentsError = useAppSelector(selectCommentsError);
+
+  const [post, setPost] = useState(null);
+  const [postLoading, setPostLoading] = useState(true);
+  const [postError, setPostError] = useState(null);
   const [newComment, setNewComment] = useState({
     name: '',
     email: '',
     body: '',
   });
 
-  //  Запрос поста
-  const {
-    data: post,
-    isLoading: postLoading,
-    isError: postError,
-    error: postErr,
-  } = useQuery({
-    queryKey: ['post', postId],
-    queryFn: () => getPost(postId),
-    enabled: !isNaN(postId) && postId > 0,
-    staleTime: 1000 * 60 * 2, // 2 минуты
-  });
+  // Загрузка поста (локально, без Redux — можно добавить позже)
+  useEffect(() => {
+    if (!isNaN(postId) && postId > 0) {
+      setPostLoading(true);
+      setPostError(null);
+      getPost(postId)
+        .then((data) => {
+          setPost(data);
+          setPostLoading(false);
+        })
+        .catch((err) => {
+          setPostError(err.message || 'Failed to load post');
+          setPostLoading(false);
+        });
+    }
+  }, [postId]);
 
-  //  Зависимый запрос: комментарии (запускается ТОЛЬКО после загрузки поста)
-  const {
-    data: comments = [],
-    isLoading: commentsLoading,
-    isError: commentsError,
-    error: commentsErr,
-  } = useQuery({
-    queryKey: ['comments', postId],
-    queryFn: () => getCommentsByPostId(postId),
-    enabled: !!post, // ← зависит от `post`
-  });
-
-  const queryClient = useQueryClient();
-
-  //  Мутация: добавить комментарий (оптимистичная)
-  const addCommentMutation = useMutation({
-    mutationFn: (comment) => createComment(comment),
-    onMutate: async (newComment) => {
-      await queryClient.cancelQueries({ queryKey: ['comments', postId] });
-      const tempId = Date.now();
-      const optimisticComment = { id: tempId, ...newComment, postId };
-
-      // Сохраняем предыдущее состояние для rollback
-      const previousComments = queryClient.getQueryData(['comments', postId]);
-
-      // Обновляем кэш немедленно
-      queryClient.setQueryData(['comments', postId], (old) => [
-        optimisticComment,
-        ...(old || []),
-      ]);
-
-      return { previousComments, tempId };
-    },
-    onError: (err, newComment, context) => {
-      // Rollback при ошибке
-      queryClient.setQueryData(['comments', postId], context.previousComments);
-    },
-    onSuccess: (realComment, newComment, context) => {
-      // Заменяем временный комментарий на настоящий
-      queryClient.setQueryData(['comments', postId], (old) =>
-        old.map(c => c.id === context.tempId ? realComment : c)
-      );
-    },
-  });
+  // Загрузка комментариев через Redux
+  useEffect(() => {
+    if (!isNaN(postId) && postId > 0) {
+      dispatch(fetchCommentsByPostId(postId));
+    }
+  }, [dispatch, postId]);
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (!newComment.body.trim()) return;
 
-    addCommentMutation.mutate({
-      postId,
-      name: newComment.name || 'Anonymous',
-      email: newComment.email || 'anonymous@example.com',
-      body: newComment.body.trim(),
-    });
+    dispatch(
+      addComment({
+        postId,
+        name: newComment.name || 'Anonymous',
+        email: newComment.email || 'anonymous@example.com',
+        body: newComment.body.trim(),
+      })
+    );
 
-    // Сброс формы после отправки (даже если pending)
     setNewComment({ name: '', email: '', body: '' });
   };
 
@@ -103,10 +85,10 @@ export const PostDetail = () => {
   if (postError) {
     return (
       <div style={{ padding: '20px', color: 'red', textAlign: 'center' }}>
-        <h2> Failed to load post</h2>
-        <p>{postErr.message}</p>
+        <h2>Failed to load post</h2>
+        <p>{postError}</p>
         <Link to="/" style={{ color: '#007bff', textDecoration: 'underline' }}>
-           Back to list
+          ← Back to list
         </Link>
       </div>
     );
@@ -123,7 +105,7 @@ export const PostDetail = () => {
           textDecoration: 'none',
         }}
       >
-         Back to Posts
+        ← Back to Posts
       </Link>
 
       {post && (
@@ -135,21 +117,27 @@ export const PostDetail = () => {
       )}
 
       <section>
-        <h3> Comments ({comments.length})</h3>
+        <h3>Comments ({comments.length})</h3>
 
-    {commentsError && (
-    <div style={{ color: 'red', marginBottom: '16px' }}>
-         Failed to load comments: {commentsErr?.message || 'Unknown error'}
-        <button
-        onClick={() => queryClient.invalidateQueries({ queryKey: ['comments', postId] })}
-        style={{ marginLeft: '8px', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}
-        >
-        Retry
-        </button>
-    </div>
-    )}
+        {commentsError && (
+          <div style={{ color: 'red', marginBottom: '16px' }}>
+            Failed to load comments: {commentsError}
+            <button
+              onClick={() => dispatch(fetchCommentsByPostId(postId))}
+              style={{
+                marginLeft: '8px',
+                color: '#007bff',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
 
-        {commentsLoading && <p>Loading comments...</p>}
+        {commentsLoading === 'pending' && <p>Loading comments...</p>}
 
         {!commentsLoading && !commentsError && (
           <div style={{ marginTop: '16px' }}>
@@ -165,13 +153,17 @@ export const PostDetail = () => {
                       marginBottom: '10px',
                       border: '1px solid #eee',
                       borderRadius: '6px',
-                      backgroundColor: comment.id < 0 ? '#fff8e1' : '#f9f9f9', // временное — жёлтый фон
+                      backgroundColor: comment.id < 0 ? '#fff8e1' : '#f9f9f9',
                     }}
                   >
                     <strong>{comment.name}</strong> • {comment.email}
-                    <div style={{ marginTop: '6px', color: '#444' }}>{comment.body}</div>
+                    <div style={{ marginTop: '6px', color: '#444' }}>
+                      {comment.body}
+                    </div>
                     {comment.id < 0 && (
-                      <small style={{ color: '#999', fontStyle: 'italic' }}>(sending...)</small>
+                      <small style={{ color: '#999', fontStyle: 'italic' }}>
+                        (sending...)
+                      </small>
                     )}
                   </li>
                 ))}
@@ -181,7 +173,15 @@ export const PostDetail = () => {
         )}
 
         {/* Форма добавления комментария */}
-        <form onSubmit={handleCommentSubmit} style={{ marginTop: '24px', padding: '16px', border: '1px solid #ddd', borderRadius: '8px' }}>
+        <form
+          onSubmit={handleCommentSubmit}
+          style={{
+            marginTop: '24px',
+            padding: '16px',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+          }}
+        >
           <h4>Add a Comment</h4>
           <div style={{ marginBottom: '12px' }}>
             <input
@@ -212,17 +212,16 @@ export const PostDetail = () => {
           </div>
           <button
             type="submit"
-            disabled={addCommentMutation.isPending}
             style={{
               padding: '8px 16px',
               backgroundColor: '#28a745',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: addCommentMutation.isPending ? 'not-allowed' : 'pointer',
+              cursor: 'pointer',
             }}
           >
-            {addCommentMutation.isPending ? 'Sending...' : ' Post Comment'}
+            Post Comment
           </button>
         </form>
       </section>

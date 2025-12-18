@@ -1,57 +1,45 @@
-import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { Loading } from './Loading';
+import React, { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector, selectPosts, selectPostsLoading, selectPostsError } from '../store/hooks';
+import { fetchPosts, addPost, editPost, removePost } from '../store/slices/postsSlice';
 import { PostForm } from './PostForm';
-import {
-  usePosts,
-  useCreatePost,
-  useUpdatePost,
-  useDeletePost,
-} from '../hooks/usePosts';
 
 export const PostList = () => {
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector(selectPosts);
+  const loading = useAppSelector(selectPostsLoading);
+  const error = useAppSelector(selectPostsError);
   const [editingPost, setEditingPost] = useState(null);
 
-  //  Получаем данные через кастомный хук
-  const {
-    data: posts = [],
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = usePosts();
+  useEffect(() => {
+    if (posts.length === 0) {
+      dispatch(fetchPosts());
+    }
+  }, [dispatch, posts.length]);
 
-  //  Мутации через кастомные хуки
-  const createMutation = useCreatePost();
-  const updateMutation = useUpdatePost();
-  const deleteMutation = useDeletePost();
-
-
-  // Обработчики
   const handleAddPost = (newPost) => {
-    createMutation.mutate(newPost);
+    dispatch(addPost(newPost));
   };
 
   const handleUpdatePost = (data) => {
     if (!editingPost) return;
-    updateMutation.mutate({ id: editingPost.id, data });
+    dispatch(editPost({ id: editingPost.id, data }));
     setEditingPost(null);
   };
 
   const handleDeletePost = (id) => {
     if (!window.confirm('Delete this post?')) return;
-    deleteMutation.mutate(id);
+    dispatch(removePost(id));
   };
 
   return (
     <div>
-      <h2 style={{ color: '#333' }}> Posts (React Query)</h2>
+      <h2 style={{ color: '#333' }}>Posts (Redux Toolkit)</h2>
 
-      {isError && (
+      {error && (
         <div style={{ color: 'red', marginBottom: '16px', fontWeight: 'bold' }}>
-           Error: {error.message || 'Failed to load posts'}
+          Error: {error}
           <button
-            onClick={() => refetch()}
+            onClick={() => dispatch(fetchPosts())}
             style={{
               marginLeft: '10px',
               padding: '4px 8px',
@@ -62,29 +50,22 @@ export const PostList = () => {
               cursor: 'pointer',
             }}
           >
-             Retry
+            Retry
           </button>
         </div>
       )}
 
-      {!editingPost && (
-        <PostForm
-          onSubmit={handleAddPost}
-          isSubmitting={createMutation.isPending}
-        />
-      )}
-
+      {!editingPost && <PostForm onSubmit={handleAddPost} />}
       {editingPost && (
         <PostForm
           initialData={editingPost}
           onSubmit={handleUpdatePost}
           onCancel={() => setEditingPost(null)}
-          isSubmitting={updateMutation.isPending}
         />
       )}
 
-      {isLoading && <Loading />}
-      {!isLoading && !isError && posts.length === 0 && <p>No posts available.</p>}
+      {loading === 'pending' && <div>Loading...</div>}
+      {!loading && !error && posts.length === 0 && <p>No posts available.</p>}
 
       <div style={{ marginTop: '20px' }}>
         {posts.map((post) => (
@@ -105,7 +86,6 @@ export const PostList = () => {
             <div style={{ marginTop: '12px' }}>
               <button
                 onClick={() => setEditingPost(post)}
-                disabled={updateMutation.isPending || deleteMutation.isPending}
                 style={{
                   marginRight: '8px',
                   padding: '6px 12px',
@@ -116,26 +96,20 @@ export const PostList = () => {
                   cursor: 'pointer',
                 }}
               >
-                 Edit
+                Edit
               </button>
               <button
                 onClick={() => handleDeletePost(post.id)}
-                disabled={deleteMutation.isPending}
                 style={{
                   padding: '6px 12px',
-                  backgroundColor:
-                    deleteMutation.variables === post.id && deleteMutation.isPending
-                      ? '#c82333'
-                      : '#dc3545',
+                  backgroundColor: '#dc3545',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
                 }}
               >
-                {deleteMutation.variables === post.id && deleteMutation.isPending
-                  ? ' Deleting...'
-                  : ' Delete'}
+                Delete
               </button>
             </div>
           </div>
